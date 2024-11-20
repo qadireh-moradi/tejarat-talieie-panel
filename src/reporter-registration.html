@@ -1,0 +1,177 @@
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="asset/css/style.css"> -->
+         <basis core="call" file="panel/styles.inc"></basis>
+    <title>ثبت نام خبرنگار</title>
+</head>
+<body class="font-IRANSansWeb">
+    <basis core="call" file="panel/header.inc"></basis>
+    <div class="w-full h-auto flex flex-row">
+        <basis core="call" file="panel/sidebar.inc"></basis>
+        <div class="dashboardm mt-[100px] pr-[250px] w-full h-full mx-[40px] pt-[56px] bg-white">
+            <div id="contBox" class="containerBox h-auto">
+                <div class="showbox w-full h-auto bg-secondary px-[61px] py-[45px] flex-col" id="reporterRegistration">
+                    <basis core='api'  run='atclient' 
+                    url='https://basispanel.ir/business/[##cms.cookie.rkey##]/fa/objectlist' 
+                    method='post' body='{"schemaid": "0D2116AB-D44E-410E-BA68-70891C673511", 
+                    "status": 0, 
+                    "tablename": "db.reporter",
+                    "site": true,
+                    "creator" : "[##check.rkey.userid##]"
+                    }
+                    ' content-type='application/json' triggers="db.refresh"   ></basis>
+                    <div class="">
+                        <basis core="print" datamembername="db.reporter" run="atclient">
+                            <layout>
+                                <script type="text/template">
+                                    <p class="text-[18px] my-4">مشخصات چک ضمانت (تعهد ارزی)</p>
+                                    <div class="w-full">
+                                        <table class="min-w-full ">
+                                            <thead class="bg-tertiary">
+                                                <tr>
+                                                    <th class="py-2 w-[20%] border-[2px] border-white text-center text-white">نام و نام
+                                                        خانوادگی</th>
+                                                    <th class="py-2 w-[20%] border-[2px] border-white text-center text-white">تاریخ ثبت
+                                                    </th>
+                                                    <th class="py-2 w-[20%] border-[2px] border-white text-center text-white">نام
+                                                        نمایشکاه</th>
+                                                    <th class="py-2 w-[20%] border-[2px] border-white text-center text-white">تاریخ شروع
+                                                    </th>
+                                                    <th class="py-2 w-[20%] border-[2px] border-white text-center text-white">تاریخ
+                                                        پایان</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="border border-white bg-tertiarylight">
+                                              @child
+                                            </tbody>
+                                        </table>
+                
+                
+                
+                                    </div>
+                                </script>
+                                </layout>
+                            
+                            <face>
+                                <script type="text/template">
+                                    <tr class="">
+                                        <td class="py-2 border-[2px] text-center border-white text-tertiary">@prp6135@
+                                        </td>
+                                        <td class="py-2 border-[2px] text-center border-white text-tertiary">@prp6135@</td>
+                                        <td class="py-2 border-[2px] text-center border-white text-tertiary">@prp6135@
+                                        </td>
+                                        <td class="py-2 border-[2px] text-center border-white text-tertiary">@prp6135@</td>
+                                        <td class="py-2 border-[2px] text-center border-white text-tertiary">@prp6135@</td>
+                                    </tr>
+                                  
+                                </script>
+                            </face>
+                        </basis>
+
+                       
+    
+                    </div>
+                    <div class="flex  items-center justify-between">
+                        <p class="my-3 text-lg">ثبت نام خبرنگار</p>
+                    </div>
+                    <basis core="schema" run="atclient"
+                        schemaUrl="https://www.freeform.ir/schema/domainform/1585635B-6FD2-49CA-93C5-104CBA31716D/0D2116AB-D44E-410E-BA68-70891C673511/fa/پرداخت-چک"
+                        displayMode="new" button="[data-btn-add]" resultSourceId="form.result"
+                        OnRendered="chequepaymentOnRendered" triggers="db.refresh">
+                    </basis>
+                    <basis core='callback' method='onSource' run='AtClient' triggers='form.result'></basis>
+    
+                    <basis core='api' if='{##edit.object|(false)##}' run='atclient'
+                        url='https://basispanel.ir/schema/domainform/[##cms.cookie.rkey##]/fa/editobject'
+                        method='post' body='object_edit={##edit.object.value##}'
+                        content-type='application/x-www-form-urlencoded' triggers='edit.object'
+                        onprocessed='exhibitionCardOnRendered'></basis>
+    
+                    <button id="btctnex" class="btnclicknext  h-[50px] ml-[10px] bg-primary rounded-[8px] text-black "
+                        data-btn-add="">ثبت</button>
+    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <basis core="call" file="panel/footer.inc"></basis>
+</body>
+
+<basis core="call" file="panel/scripts.inc"></basis>
+<script>
+    showloading()
+    function chequepaymentOnRendered() {
+        const exhibitioncard = document.querySelector("#reporterRegistration")
+        const reportersInputs = exhibitioncard.querySelectorAll("[data-bc-text-input]")
+        const reportersCaptions = exhibitioncard.querySelectorAll("[data-bc-answer-title]")
+        const plusBtn = exhibitioncard.querySelector("[data-sys-plus]")
+        plusBtn.textContent = `افزودن غرفه دار جدید +`
+        exhibitioncard.querySelector("[data-bc-title-container]").style.display = "none"
+        const titleplaceHolder = []
+        reportersCaptions.forEach((e, i) => {
+            if (reportersInputs[i]) {
+                titleplaceHolder.push(e.textContent)
+                reportersInputs[i].setAttribute("placeHolder", e.textContent)
+                e.style.display = "none"
+            }
+        })
+        const plusBtnFild = exhibitioncard.querySelectorAll("[data-sys-plus]")
+        plusBtnFild.forEach((e) => {
+            e.addEventListener("click", () => {
+                
+                exhibitioncard.querySelector("[data-bc-title-container]").style.display = "none"
+                reportersCaptions.forEach((e, i) => {
+                    if (reportersInputs[i]) {
+                        reportersInputs[i].setAttribute("placeHolder", titleplaceHolder[i])
+                        e.style.display = "none"
+                    }
+                })
+            })
+
+        })
+
+        document.body.addEventListener('click', function (event) {
+            const reportersCaptions = exhibitioncard.querySelectorAll("[data-bc-answer-title]")
+            const reportersInputs = exhibitioncard.querySelectorAll("[data-bc-text-input]")
+            const exhibition =  exhibitioncard.querySelectorAll("[data-bc-part-container]") 
+            if (event.target.tagName == "BUTTON") {
+                reportersInputs.forEach((e, i) => {
+                    const index = i % reportersCaptions.length;
+                    e.setAttribute("placeHolder", reportersCaptions[index].firstChild.data)                     
+                    if(e.value){
+
+                    }
+                })
+            }
+
+
+        });
+
+        hideloading()
+    }
+
+    async function exhibitionCardOnRendered(args) {
+        var response = args.response;
+    var json = await response.json();
+ 
+    if (json.errorid == 6) {
+            OperationStatus('success')
+            $bc.setSource("db.refresh" , true)
+        } else {
+            OperationStatus('error')
+        }
+
+    }
+    function onSource(args) {
+    const stringJson = JSON.stringify(args.source?.rows[0]);
+    $bc.setSource('edit.object', {
+    value: stringJson
+    })
+    }
+</script>
+
+</html>

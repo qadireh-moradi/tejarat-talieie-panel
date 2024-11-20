@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <basis core="call" file="panel/styles.inc" ></basis>
+    <title> پرداخت هاى چک | تجارت طلایی</title>
+</head>
+
+
+<body class="font-IRANSansWeb">
+
+
+    <!-- triggers="edit.object" -->
+
+
+    <basis core="call" file="panel/header.inc" ></basis>
+    <div class="w-full h-full flex flex-row">
+        <!--  -->
+        <basis core="call" file="panel/sidebar.inc" ></basis>
+        <div class="dashboardm mt-[100px] pr-[250px] w-full h-full mx-[40px] pt-[56px] bg-white">
+            <div id="contBox" class="containerBox h-[100vh]">
+            <div class="showbox w-full h-full bg-secondary px-[61px] py-[45px] flex-col" id="chequepayment">
+
+
+              
+                    <basis core='api'  run='atclient' 
+                    url='https://basispanel.ir/business/[##cms.cookie.rkey##]/fa/objectlist' 
+                    method='post' body='{"schemaid": "C5A73CF1-EE10-4FE2-A28B-9E24B2357345", 
+                    "status": 0, 
+                    "tablename": "db.list",
+                    "site": true,
+                    "creator" : "[##check.rkey.userid##]"
+                  
+                    }
+                    ' content-type='application/json' triggers='db.refresh'  ></basis>
+    
+                    <basis core="print" datamembername="db.list" run="atclient">
+                        <layout>
+                            <script type="text/template">
+                                <div class="flex justify-between">
+                  
+                                    <p class=" mb-8 text-lg font-bold"> پرداخت های انجام شده</p>
+                
+                              
+                                </div>
+                                <div class="mb-10">
+                       
+                                    <div>
+                                    <div class="grid grid-cols-5 gap-[2px]">
+                                        <div class="bg-[#194A96] text-secondary font-bold text-base h-[35px] leading-9 px-10">شماره رسید دریافتی از برگزار کننده</div>
+                                        <div class="bg-[#194A96] text-secondary font-bold text-base h-[35px] leading-9 px-10">شماره چک</div>
+                                        <div class="bg-[#194A96] text-secondary font-bold text-base h-[35px] leading-9 px-10">مبلغ چک </div>
+                                        <div class="bg-[#194A96] text-secondary font-bold text-base h-[35px] leading-9 px-10">نام بانک</div>
+                                        <div class="bg-[#194A96] text-secondary font-bold text-base h-[35px] leading-9 px-10">تصویر فیش</div>
+                                    </div>
+                                  @child
+                                </div>
+                                </div>
+                            </script>
+                        </layout>
+                        <face>
+                            <script type="text/template">
+                                <div class="grid grid-cols-5 gap-[2px]">
+                                    <div class="bg-[#194A9626] text-text text-base py-5 px-10">@prp6140@</div>
+                                    <div class="bg-[#194A9626] text-text text-base py-5 px-10">@prp6141@</div>
+                                    <div class="bg-[#194A9626] text-text text-base py-5 px-10">@prp6142@</div>
+                                    <div class="bg-[#194A9626] text-text text-base py-5 px-10">@prp6143@	</div>
+                                    <div class="bg-[#194A9626] text-text text-base py-5 px-10">@prp6144@</div>
+                                </div>
+                            </script>
+    
+                        </face>
+                    </basis>
+                  
+
+                <div class="flex justify-between">
+              
+                    <p class=" mb-10 text-lg">مشخصات چک ضمانت (تعهد ارزی)</p>
+
+              
+                </div>
+                <basis core="schema" run="atclient" 
+                schemaUrl="https://www.freeform.ir/schema/domainform/1585635B-6FD2-49CA-93C5-104CBA31716D/C7F6C5BF-DA43-430E-B61D-17F6E84440BA/fa/پرداخت-چک" 
+                displayMode="new" button="[data-btn-add]" resultSourceId="form.result" OnRendered="chequepaymentOnRendered"></basis>
+                <basis core='callback' method='onSource' run='AtClient' triggers='form.result' ></basis>
+             
+                <basis core='api' if='{##edit.object|(false)##}' run='atclient' 
+                url='https://basispanel.ir/schema/domainform/[##cms.cookie.rkey##]/fa/editobject' 
+                method='post' body='object_edit={##edit.object.value##}' content-type='application/x-www-form-urlencoded' triggers='edit.object' onprocessed='OnProcessedEditObject' ></basis>
+
+                <button id="btctnex"
+                        class="btnclicknext  h-[50px] ml-[10px] bg-primary rounded-[8px] text-black " data-btn-add="">ثبت</button>
+            </div>
+          </div>
+        </div>
+
+
+
+    </div>
+
+    <basis core="call" file="panel/footer.inc" ></basis>
+
+       
+</body>
+<basis core="call" file="panel/scripts.inc" ></basis>
+<script>
+   showloading()
+ function onSource(args) {
+ const stringJson = JSON.stringify(args.source?.rows[0]);
+ $bc.setSource('edit.object', {
+ value: stringJson
+ })
+ }
+</script>
+<script>
+    
+function chequepaymentOnRendered(){
+    const exhibitioncard = document.querySelector("#chequepayment")
+    const reportersInputs = exhibitioncard.querySelectorAll("[data-sys-input-text],textarea")
+    const reportersCaptions = exhibitioncard.querySelectorAll("[data-bc-question-title]")
+    exhibitioncard.querySelector("[data-bc-title-container]").style.display ="none"
+    reportersCaptions.forEach((e,i) => {
+        if(reportersInputs[i]){
+            reportersInputs[i].setAttribute("placeHolder" , e.textContent)
+            e.style.display ="none"
+        }
+    })
+    hideloading()
+}
+
+function OnProcessedEditObject(args){
+    
+}
+
+async function OnProcessedEditObject(args){
+    var response = args.response;
+    var json = await response.json();
+ 
+    if( json.errorid == 6){
+        $bc.setSource("db.refresh" , true)
+    }
+}
+
+
+</script>
+
+</html>

@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+    --primary : #CFB62C;
+    --secondary :#E8E8E8;
+    --tertiary : #194A96;
+    --tertiarylight : #194b9650;
+    --text: #000;
+    --textgray : #828282;
+    --textred: #961919;
+    --bghead : #DFDFDF;
+    --backgroundColor : #F5F5F5;
+    --blue : #194A96;
+
+    
+    
+
+}
+
+@font-face {
+	font-family: 'IRANSans';
+	font-style: normal;
+	font-weight: normal;
+	src: url('https://cdn.basiscore.net/_fonts/IRANSansWeb(FaNum).eot');
+	src: url('https://cdn.basiscore.net/_fonts/IRANSansWeb(FaNum).eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('https://cdn.basiscore.net/_fonts/IRANSansWeb(FaNum).woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('https://cdn.basiscore.net/_fonts/IRANSansWeb(FaNum).woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+		 url('https://cdn.basiscore.net/_fonts/IRANSansWeb(FaNum).ttf') format('truetype');
+}
